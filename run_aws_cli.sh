@@ -10,7 +10,7 @@ fi
 export $(grep -v '^#' .env | xargs)
 
 # Run Docker with AWS CLI
-docker run --rm --env-file .env \
+docker run --rm -it --env-file .env \
   --hostname="$HOSTNAME" \
   --env=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
   --network=bridge \

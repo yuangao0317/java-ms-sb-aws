@@ -13,7 +13,7 @@ else {
 }
 
 # Run Docker with AWS CLI
-docker run --rm `
+docker run --rm -it `
     --env-file $envFile `
     --hostname $env:HOSTNAME `
     --env "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" `
