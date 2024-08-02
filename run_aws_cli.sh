@@ -16,4 +16,4 @@ docker run --rm --env-file .env \
   --network=bridge \
   --workdir=/aws \
   --restart=no \
-  --runtime=runc amazon/aws-cli:2.9.22 "$@"
+  --runtime=runc amazon/aws-cli:"$AWS_CLI_IMAGE_TAG" "$@"

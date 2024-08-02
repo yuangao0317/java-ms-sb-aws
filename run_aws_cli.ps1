@@ -21,5 +21,5 @@ docker run --rm `
     --workdir "/aws" `
     --restart "no" `
     --runtime "runc" `
-    "amazon/aws-cli:2.9.22" `
-    "$args"
+    "amazon/aws-cli:$env:AWS_CLI_IMAGE_TAG" `
+    $args
