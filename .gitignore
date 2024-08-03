@@ -167,3 +167,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.aws
