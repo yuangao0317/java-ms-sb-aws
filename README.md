@@ -1,6 +1,6 @@
 # java-ms-sb-aws
 
-# Setup for multi-version supoort (aws-cli, aws-cdk-cli, NodeJs, JDK, Maven)
+# Setup with multi-version supoort (aws-cli, aws-cdk-cli, NodeJs, JDK, Maven)
 - Setup different Java version in IntelliJ IDEA:  
 search 'JDK', then download or select one.  
 
