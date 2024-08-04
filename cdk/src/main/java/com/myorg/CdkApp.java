@@ -28,6 +28,15 @@ public class CdkApp {
                 .tags(infraTags)
                 .build());
 
+        // VPC Stack
+
+
+        // Cluster Stack
+
+
+        // NLB Stack
+
+
         app.synth();
     }
 }

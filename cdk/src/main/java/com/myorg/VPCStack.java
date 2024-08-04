@@ -15,7 +15,7 @@ public class VPCStack extends Stack {
 
         this.vpc = new Vpc(this, "VPC-Stack", VpcProps.builder()
                 .vpcName("vpc-stack")
-                //.maxAzs(2)
+                .maxAzs(2)
                 //DO NOT DO THIS IN PRODUCTION!!!
                 //.natGateways(0)
                 .build());
