@@ -19,7 +19,7 @@ public class VPCStack extends Stack {
                 .vpcName("vpc-stack")
                 .maxAzs(2)
                 //DO NOT DO THIS IN PRODUCTION!!!
-                //.natGateways(0)
+                //.natGateways(0) // for non NAT Gateway like Internet Gateway(free)
                 .build());
     }
 

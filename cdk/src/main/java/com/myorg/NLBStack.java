@@ -22,19 +22,19 @@ public class NLBStack extends Stack {
     public NLBStack(@Nullable final Construct scope,
                     @Nullable final String id,
                     @Nullable final StackProps props,
-                    NLPStackDependency nlpStackDependency) {
+                    NLBStackDependency dependency) {
         super(scope, id, props);
 
         this.networkLoadBalancer = new NetworkLoadBalancer(this, "NLB", NetworkLoadBalancerProps.builder()
                 .loadBalancerName("nlb")
                 .internetFacing(false)
-                .vpc(nlpStackDependency.vpc())
+                .vpc(dependency.vpc())
                 .build());
 
         this.applicationLoadBalancer = new ApplicationLoadBalancer(this, "ALB", ApplicationLoadBalancerProps.builder()
                 .loadBalancerName("alb")
                 .internetFacing(false)
-                .vpc(nlpStackDependency.vpc())
+                .vpc(dependency.vpc())
                 .build());
 
         this.vpcLink = new VpcLink(this, "VPC-Link", VpcLinkProps.builder()
@@ -55,6 +55,6 @@ public class NLBStack extends Stack {
     }
 }
 
-record NLPStackDependency(
+record NLBStackDependency(
         Vpc vpc
 ){}
