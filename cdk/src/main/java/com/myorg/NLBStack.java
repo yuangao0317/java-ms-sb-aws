@@ -30,11 +30,13 @@ public class NLBStack extends Stack {
                 .internetFacing(false)
                 .vpc(nlpStackDependency.vpc())
                 .build());
+
         this.applicationLoadBalancer = new ApplicationLoadBalancer(this, "ALB", ApplicationLoadBalancerProps.builder()
                 .loadBalancerName("alb")
                 .internetFacing(false)
                 .vpc(nlpStackDependency.vpc())
                 .build());
+
         this.vpcLink = new VpcLink(this, "VPC-Link", VpcLinkProps.builder()
                 .targets(Collections.singletonList(this.networkLoadBalancer))
                 .build());

@@ -12,7 +12,9 @@ import software.constructs.Construct;
 public class ECRStack extends Stack {
     private final Repository productServiceRepo;
 
-    public ECRStack(@Nullable final Construct scope, @Nullable final String id, @Nullable final StackProps props) {
+    public ECRStack(@Nullable final Construct scope,
+                    @Nullable final String id,
+                    @Nullable final StackProps props) {
         super(scope, id, props);
 
         this.productServiceRepo = new Repository(this, "Product-Service", RepositoryProps.builder()

@@ -10,7 +10,9 @@ import software.constructs.Construct;
 public class VPCStack extends Stack {
     private final Vpc vpc;
 
-    public VPCStack(@Nullable final Construct scope, @Nullable final String id, @Nullable final StackProps props) {
+    public VPCStack(@Nullable final Construct scope,
+                    @Nullable final String id,
+                    @Nullable final StackProps props) {
         super(scope, id, props);
 
         this.vpc = new Vpc(this, "VPC-Stack", VpcProps.builder()
