@@ -70,4 +70,10 @@ npx aws-cdk@2.114.1 bootstrap --profile default
 ```
 ```
 npx aws-cdk@2.114.1 deploy ECR-Stack --profile default
+npx aws-cdk@2.114.1 deploy --all --require-approval never
+npx aws-cdk@2.114.1 destroy ECR-Stack --profile default
+npx aws-cdk@2.114.1 destroy --all --profile default
+```
+```
+npx aws-cdk@2.114.1 deploy ECR-Stack --profile default
 ```
