@@ -37,8 +37,8 @@ public class APIStack extends Stack {
                                         .connectionType(ConnectionType.VPC_LINK)
                                         .build()
                         )
-                        .build()
-        ));
+                        .build())
+        );
     }
 }
 
