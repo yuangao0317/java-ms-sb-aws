@@ -5,6 +5,7 @@ import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
+import software.amazon.awscdk.services.dynamodb.*;
 import software.amazon.awscdk.services.ec2.Peer;
 import software.amazon.awscdk.services.ec2.Port;
 import software.amazon.awscdk.services.ec2.Vpc;
@@ -44,6 +45,21 @@ public class ProductServiceStack extends Stack {
                 .streamPrefix("ProductService")
                 .build());
 
+        // DynamoDB
+        Table productsDdb = new Table(this, "ProductsDdb",
+                TableProps.builder()
+                        .partitionKey(Attribute.builder()
+                                .name("id")
+                                .type(AttributeType.STRING)
+                                .build())
+                        .tableName("products")
+                        .removalPolicy(RemovalPolicy.DESTROY) // !!! table will be deleted with stack
+                        .billingMode(BillingMode.PROVISIONED)
+                        .readCapacity(1)
+                        .writeCapacity(1)
+                        .build());
+
+
         // Init Fargate compute resources
         FargateTaskDefinition fargateTaskDefinition = new FargateTaskDefinition(this, "Fargate-Task-Definition",
                 FargateTaskDefinitionProps.builder()
@@ -55,6 +71,9 @@ public class ProductServiceStack extends Stack {
         // Add ECR container to Fargate
         Map<String, String> containerEnvVariables = new HashMap<>();
         containerEnvVariables.put("SERVER_PORT", String.format("%d", PRODUCT_SERVICE_PORT));
+        containerEnvVariables.put("AWS_PRODUCTSDDB_NAME", productsDdb.getTableName());
+        containerEnvVariables.put("AWS_REGION", this.getRegion());
+
         fargateTaskDefinition.addContainer("Product-Service-Container",
                 ContainerDefinitionOptions.builder()
                         .image(ContainerImage.fromEcrRepository(dependency.repository(), "1.0.0"))
@@ -82,6 +101,8 @@ public class ProductServiceStack extends Stack {
 
         // Assign permission to Fargate
         dependency.repository().grantPull(Objects.requireNonNull(fargateTaskDefinition.getExecutionRole()));
+        // Assign DynamoDB permission to Fargate
+        productsDdb.grantReadWriteData(fargateTaskDefinition.getTaskRole());
         // Assign security group to Fargate
         fargateService.getConnections().getSecurityGroups().get(0).addIngressRule(Peer.anyIpv4(), Port.tcp(PRODUCT_SERVICE_PORT));
 
@@ -137,6 +158,8 @@ public class ProductServiceStack extends Stack {
                                 )
                         )
                         .build());
+
+
     }
 }
 
