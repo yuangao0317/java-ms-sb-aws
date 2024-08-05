@@ -14,7 +14,7 @@ public class ClusterStack extends Stack {
     public ClusterStack(@Nullable final Construct scope,
                         @Nullable final String id,
                         @Nullable final StackProps props,
-                        ClusterStackDependency dependency) {
+                        final ClusterStackDependency dependency) {
         super(scope, id, props);
 
         this.cluster = new Cluster(this, "App-Cluster", ClusterProps.builder()

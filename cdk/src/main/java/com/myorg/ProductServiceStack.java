@@ -30,7 +30,7 @@ public class ProductServiceStack extends Stack {
     public ProductServiceStack(@Nullable final Construct scope,
                                @Nullable final String id,
                                @Nullable final StackProps props,
-                               ProductServiceDependency dependency) {
+                               final ProductServiceDependency dependency) {
         super(scope, id, props);
 
         // CloudWatch Logger
@@ -89,12 +89,12 @@ public class ProductServiceStack extends Stack {
         ApplicationListener applicationListener = dependency.alb()
                 .addListener("Product-Service-ALB-Listener",
                         ApplicationListenerProps.builder()
-                                .port(PRODUCT_SERVICE_PORT)
+                                .port(PRODUCT_SERVICE_PORT) // listen on 8080
                                 .protocol(ApplicationProtocol.HTTP)
                                 .loadBalancer(dependency.alb())
                                 .build());
 
-        // Connect Fargate to ALB
+        // Connect Fargate to ALB, listen will forward its 8080 http requests to target group 8080
         applicationListener.addTargets("Product-Service-ALB-Target",
                 AddApplicationTargetsProps.builder()
                         .targetGroupName("product-service-alb-target-group")

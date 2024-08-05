@@ -22,7 +22,7 @@ public class NLBStack extends Stack {
     public NLBStack(@Nullable final Construct scope,
                     @Nullable final String id,
                     @Nullable final StackProps props,
-                    NLBStackDependency dependency) {
+                    final NLBStackDependency dependency) {
         super(scope, id, props);
 
         this.networkLoadBalancer = new NetworkLoadBalancer(this, "NLB", NetworkLoadBalancerProps.builder()
