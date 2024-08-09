@@ -10,6 +10,7 @@ public class Product {
     private String code;
     private String model;
     private float price;
+    private String productUrl;
 
     @DynamoDbPartitionKey
     public String getId() {
@@ -50,5 +51,13 @@ public class Product {
 
     public void setPrice(float price) {
         this.price = price;
+    }
+
+    public String getProductUrl() {
+        return productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
     }
 }
