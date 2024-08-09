@@ -5,3 +5,6 @@
 ## Setup with multi-version supoort development environment
 
 https://github.com/yuangao0317/java-ms-sb-aws/blob/main/SETUP.md
+
+## Reference
+https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-dynamodb.html  
