@@ -2,6 +2,9 @@ package com.gao.product_service.products.repositories;
 // https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/ddb-en-client-use-multirecord.html
 // https://github.com/aws/aws-sdk-java-v2/blob/master/services-custom/dynamodb-enhanced/README.md
 
+// https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/examples-dynamodb.html
+// https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-dynamodb.html
+
 import com.gao.product_service.products.dto.ProductDto;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -77,7 +80,7 @@ public class ProductsRepository {
                 .build());
     }
 
-    public CompletableFuture<Product> update(Product product, String productId) {
+    public CompletableFuture<Product> update(String productId, Product product) {
         logger.info("UPDATE product: {}, WITH: {}", product, productId);
         product.setId(productId);
         return productsTable.updateItem(
