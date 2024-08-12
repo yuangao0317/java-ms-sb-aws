@@ -7,7 +7,8 @@
 https://github.com/yuangao0317/java-ms-sb-aws/blob/main/SETUP.md
 
 ## AWS API Gateway
-![image](https://github.com/user-attachments/assets/f7545554-8b8f-4154-908c-e470e89cbc41)
+![image](https://github.com/user-attachments/assets/d333e830-7f20-45de-b36a-b6dacbd7d4d8)
+
 
 
 
