@@ -5,3 +5,8 @@
 ## Setup with multi-version supoort development environment
 
 https://github.com/yuangao0317/java-ms-sb-aws/blob/main/SETUP.md
+
+## AWS API Gateway
+![image](https://github.com/user-attachments/assets/b5a3e150-a352-4b54-8172-65f38b644a48)
+
+
