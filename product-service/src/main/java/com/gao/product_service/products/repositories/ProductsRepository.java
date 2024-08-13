@@ -5,6 +5,7 @@ package com.gao.product_service.products.repositories;
 // https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/examples-dynamodb.html
 // https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/examples-dynamodb.html
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.gao.product_service.products.dto.ProductDto;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 
 
 @Repository
+@XRayEnabled
 public class ProductsRepository {
     private static final Logger logger = LogManager.getLogger(ProductsRepository.class);
 

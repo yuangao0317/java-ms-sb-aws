@@ -1,5 +1,6 @@
 package com.gao.product_service.products.controllers;
 
+import com.amazonaws.xray.spring.aop.XRayEnabled;
 import com.gao.product_service.products.dto.ProductDto;
 import com.gao.product_service.products.models.Product;
 import com.gao.product_service.products.repositories.ProductsRepository;
@@ -16,8 +17,9 @@ import java.util.concurrent.CompletionException;
 
 @RestController
 @RequestMapping("/api/products")
+@XRayEnabled
 public class ProductsController {
-    private static final Logger log = LogManager.getLogger(ProductsController.class);
+    private static final Logger logger = LogManager.getLogger(ProductsController.class);
     private final ProductsRepository productsRepository;
 
     @Autowired
@@ -27,7 +29,7 @@ public class ProductsController {
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        log.info("Get all products");
+        logger.info("Get all products");
         return new ResponseEntity<>(productsRepository.getAll(), HttpStatus.OK);
     }
 
@@ -49,7 +51,7 @@ public class ProductsController {
         newProduct.setId(UUID.randomUUID().toString());
         productsRepository.create(newProduct).join();
 
-        log.info("Product created - ID: {}", newProduct.getId());
+        logger.info("Product created - ID: {}", newProduct.getId());
         return new ResponseEntity<>(new ProductDto(newProduct), HttpStatus.CREATED);
     }
 
@@ -58,7 +60,7 @@ public class ProductsController {
         Product productDeleted = productsRepository.deleteById(id).join();
 
         if (productDeleted != null) {
-            log.info("Product created - ID: {}", productDeleted.getId());
+            logger.info("Product created - ID: {}", productDeleted.getId());
             return new ResponseEntity<>(new ProductDto(productDeleted), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
@@ -69,10 +71,10 @@ public class ProductsController {
     public ResponseEntity<?> updateProductById(@PathVariable String id, @RequestBody ProductDto productDto) {
         try {
             Product productUpdated = productsRepository.update(id, ProductDto.toProduct(productDto)).join();
-            log.info("Product updated - ID: {}", productUpdated.getId());
+            logger.info("Product updated - ID: {}", productUpdated.getId());
             return new ResponseEntity<>(new ProductDto(productUpdated), HttpStatus.OK);
         } catch (CompletionException e) {
-            log.error("Product updated - ID: {}", id, e.getMessage(), e);
+            logger.error("Product updated - ID: {}", id, e.getMessage(), e);
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
     }
