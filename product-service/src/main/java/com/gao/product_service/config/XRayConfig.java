@@ -17,7 +17,7 @@ import java.net.URL;
 
 @Configuration
 public class XRayConfig {
-    private static final Logger LOG = LoggerFactory.getLogger(XRayConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(XRayConfig.class);
 
     public XRayConfig() {
         try {
@@ -31,7 +31,7 @@ public class XRayConfig {
 
             AWSXRay.setGlobalRecorder(awsxRayRecorder);
         } catch (FileNotFoundException e) {
-            LOG.error("XRay config file not found");
+            logger.error("XRay config file not found");
         }
     }
 

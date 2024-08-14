@@ -8,6 +8,7 @@ import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.ecs.ClusterProps;
 import software.constructs.Construct;
 
+// ECS Cluster
 public class ClusterStack extends Stack {
     private final Cluster cluster;
 

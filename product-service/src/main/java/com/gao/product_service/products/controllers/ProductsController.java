@@ -32,12 +32,13 @@ public class ProductsController {
         logger.info("Get all products");
         return new ResponseEntity<>(productsRepository.getAll(), HttpStatus.OK);
     }
-
+    // @RequestParam(name = "page", defaultValue = 1)
     @GetMapping("{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") String id) {
         Product product = productsRepository.getById(id).join();
 
         if (product != null) {
+            logger.info("Get product by ID: {}", product.getId());
             return new ResponseEntity<>(new ProductDto(product), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);

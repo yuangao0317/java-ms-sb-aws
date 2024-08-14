@@ -77,6 +77,7 @@ public class ProductServiceStack extends Stack {
         containerEnvVariables.put("AWS_XRAY_DAEMON_ADDRESS", "0.0.0.0:2000");
         containerEnvVariables.put("AWS_XRAY_CONTEXT_MISSING", "IGNORE_ERROR");
         containerEnvVariables.put("AWS_XRAY_TRACING_NAME", "product-service");
+        containerEnvVariables.put("LOGGING_LEVEL_ROOT", "INFO");
 
         fargateTaskDefinition.addContainer("Product-Service-Container",
                 ContainerDefinitionOptions.builder()
@@ -119,6 +120,7 @@ public class ProductServiceStack extends Stack {
                         .memoryLimitMiB(128)
                         .build());
         // We need to config XRay in AWS Console as well
+        // Config 'Traces' - 'Sampling rules' - 'Create', like the json sampling file in product-service project
 
         // Init ECS Fargate Service
         FargateService fargateService = new FargateService(this, "Product-Service-Fargate-Service",

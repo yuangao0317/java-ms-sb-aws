@@ -1,10 +1,14 @@
 package com.myorg;
 
 import org.jetbrains.annotations.Nullable;
+import software.amazon.awscdk.RemovalPolicy;
 import software.amazon.awscdk.Stack;
 import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.apigateway.*;
 import software.amazon.awscdk.services.elasticloadbalancingv2.NetworkLoadBalancer;
+import software.amazon.awscdk.services.logs.LogGroup;
+import software.amazon.awscdk.services.logs.LogGroupProps;
+import software.amazon.awscdk.services.logs.RetentionDays;
 import software.constructs.Construct;
 
 import java.util.HashMap;
@@ -17,9 +21,34 @@ public class APIStack extends Stack {
                     final APIStackDependency dependency) {
         super(scope, id, props);
 
+        LogGroup logGroup = new LogGroup(this, "API-Logs",
+                LogGroupProps.builder()
+                        .logGroupName("api-logs")
+                        .removalPolicy(RemovalPolicy.DESTROY)
+                        .retention(RetentionDays.ONE_MONTH)
+                        .build());
+
         RestApi restApi = new RestApi(this, "App-RestApi",
                 RestApiProps.builder()
                         .restApiName("app-api-gateway")
+                        .cloudWatchRole(true)
+                        .deployOptions(StageOptions.builder()
+                                .loggingLevel(MethodLoggingLevel.INFO)
+                                .accessLogDestination(new LogGroupLogDestination((logGroup)))
+                                .accessLogFormat(AccessLogFormat.jsonWithStandardFields(
+                                        JsonWithStandardFieldProps.builder()
+                                                .caller(true)
+                                                .httpMethod(true)
+                                                .ip(true)
+                                                .protocol(true)
+                                                .requestTime(true)
+                                                .resourcePath(true)
+                                                .responseLength(true)
+                                                .status(true)
+                                                .user(true)
+                                                .build()
+                                ))
+                                .build())
                         .build());
 
         this.createProductsResource(restApi, dependency);
@@ -27,6 +56,12 @@ public class APIStack extends Stack {
 
     private void createProductsResource(RestApi restApi, APIStackDependency apiStackDependency) {
         Resource productsResource = restApi.getRoot().addResource("products");
+
+        Map<String, String> productsIntegrationParameters = new HashMap<>();
+        productsIntegrationParameters.put("integration.request.header.requestId", "context.requestId");
+
+        Map<String, Boolean> productsMethodParameters = new HashMap<>();
+        productsMethodParameters.put("method.request.header.requestId", false);
 
         // API Gateway forward requests to NetworkLoadBalancer through VPC Link
         // GET /products
@@ -38,9 +73,11 @@ public class APIStack extends Stack {
                                 IntegrationOptions.builder()
                                         .vpcLink(apiStackDependency.vpcLink())
                                         .connectionType(ConnectionType.VPC_LINK)
+                                        .requestParameters(productsIntegrationParameters)
                                         .build()
                         )
-                        .build())
+                        .build()),
+                MethodOptions.builder().requestParameters(productsMethodParameters).build()
         );
 
         // POST /products
@@ -53,9 +90,11 @@ public class APIStack extends Stack {
                                 IntegrationOptions.builder()
                                         .vpcLink(apiStackDependency.vpcLink())
                                         .connectionType(ConnectionType.VPC_LINK)
+                                        .requestParameters(productsIntegrationParameters)
                                         .build()
                         )
-                        .build())
+                        .build()),
+                MethodOptions.builder().requestParameters(productsMethodParameters).build()
         );
 
         // GET /products/{id}
@@ -63,9 +102,11 @@ public class APIStack extends Stack {
 
         Map<String, String> productIdIntegrationParameters = new HashMap<>();
         productIdIntegrationParameters.put("integration.request.path.id", "method.request.path.id");
+        productIdIntegrationParameters.put("integration.request.header.requestId", "context.requestId");
 
         Map<String, Boolean> productIdMethodParameters = new HashMap<>();
         productIdMethodParameters.put("method.request.path.id", true);
+        productIdMethodParameters.put("method.request.header.requestId", false);
 
         Resource productsIdResource = productsResource.addResource(productId);
 
