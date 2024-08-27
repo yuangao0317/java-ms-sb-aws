@@ -17,6 +17,8 @@ import com.gao.product_service.products.models.Product;
 
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.PagePublisher;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 import software.amazon.awssdk.enhanced.dynamodb.model.UpdateItemEnhancedRequest;
 
 import java.util.ArrayList;
@@ -96,4 +98,23 @@ public class ProductsRepository {
         );
     }
 
+    private CompletableFuture<Product> checkIfCodeExists(String code) {
+        List<Product> products = new ArrayList<>();
+        productsTable.index("codeIdx").query(
+                QueryEnhancedRequest.builder()
+                        .limit(1)
+                        .queryConditional(QueryConditional.keyEqualTo(
+                                Key.builder()
+                                        .partitionValue(code)
+                                        .build()))
+                        .build())
+                .subscribe(productPage -> {
+                        products.addAll(productPage.items());
+                }).join();
+        if (products.size() > 0) {
+            return CompletableFuture.supplyAsync(() -> products.get(0));
+        } else {
+            return CompletableFuture.supplyAsync(() -> null);
+        }
+    }
 }
