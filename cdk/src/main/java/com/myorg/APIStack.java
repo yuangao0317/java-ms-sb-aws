@@ -97,9 +97,10 @@ public class APIStack extends Stack {
 
         Map<String, Boolean> productsMethodParameters = new HashMap<>();
         productsMethodParameters.put("method.request.header.requestId", false);
+        productsMethodParameters.put("method.request.querystring.code", false);
 
         // API Gateway forward requests to NetworkLoadBalancer through VPC Link
-        // GET /products
+        // GET /products?code=
         productsResource.addMethod("GET", new Integration(
                 IntegrationProps.builder()
                         .type(IntegrationType.HTTP_PROXY)
