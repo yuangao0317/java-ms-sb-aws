@@ -111,8 +111,18 @@ public class ProductsRepository {
                 .subscribe(productPage -> {
                         products.addAll(productPage.items());
                 }).join();
+
         if (products.size() > 0) {
             return CompletableFuture.supplyAsync(() -> products.get(0));
+        } else {
+            return CompletableFuture.supplyAsync(() -> null);
+        }
+    }
+
+    public CompletableFuture<Product> getByCode(String code) {
+        Product productByCode = checkIfCodeExists(code).join();
+        if (productByCode != null) {
+            return getById(productByCode.getId());
         } else {
             return CompletableFuture.supplyAsync(() -> null);
         }
