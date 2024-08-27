@@ -11,6 +11,7 @@ import software.amazon.awscdk.services.logs.LogGroupProps;
 import software.amazon.awscdk.services.logs.RetentionDays;
 import software.constructs.Construct;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,6 +55,40 @@ public class APIStack extends Stack {
         this.createProductsResource(restApi, dependency);
     }
 
+    private Map<String, JsonSchema> productRequestValidatorSchema(RestApi restApi) {
+        Map<String, JsonSchema> productModelProperties = new HashMap<>();
+        productModelProperties.put("name",
+                JsonSchema.builder()
+                        .type(JsonSchemaType.STRING)
+                        .minLength(5)
+                        .maxLength(50)
+                        .build()
+        );
+        productModelProperties.put("code",
+                JsonSchema.builder()
+                        .type(JsonSchemaType.STRING)
+                        .minLength(5)
+                        .maxLength(15)
+                        .build()
+        );
+        productModelProperties.put("model",
+                JsonSchema.builder()
+                        .type(JsonSchemaType.STRING)
+                        .minLength(5)
+                        .maxLength(50)
+                        .build()
+        );
+        productModelProperties.put("price",
+                JsonSchema.builder()
+                        .type(JsonSchemaType.NUMBER)
+                        .minimum(10.0)
+                        .maximum(1000.0)
+                        .build()
+        );
+        
+        return productModelProperties;
+    }
+
     private void createProductsResource(RestApi restApi, APIStackDependency apiStackDependency) {
         Resource productsResource = restApi.getRoot().addResource("products");
 
@@ -80,6 +115,29 @@ public class APIStack extends Stack {
                 MethodOptions.builder().requestParameters(productsMethodParameters).build()
         );
 
+        RequestValidator productRequestValidator = new RequestValidator(this, "Product-Request-Validator",
+                RequestValidatorProps.builder()
+                        .restApi(restApi)
+                        .requestValidatorName("Product-request-validator")
+                        .validateRequestBody(true)
+                        .build()
+        );
+
+        Model productModel = new Model(this, "Product-Model",
+                ModelProps.builder()
+                        .modelName("product-model")
+                        .restApi(restApi)
+                        .contentType("application/json")
+                        .schema(JsonSchema.builder()
+                                .type(JsonSchemaType.OBJECT)
+                                .properties(this.productRequestValidatorSchema(restApi))
+                                .required(Arrays.asList("name", "code"))
+                                .build())
+                        .build()
+        );
+        Map<String, Model> productRequestModels = new HashMap<>();
+        productRequestModels.put("application/json", productModel);
+
         // POST /products
         productsResource.addMethod("POST", new Integration(
                 IntegrationProps.builder()
@@ -94,7 +152,11 @@ public class APIStack extends Stack {
                                         .build()
                         )
                         .build()),
-                MethodOptions.builder().requestParameters(productsMethodParameters).build()
+                MethodOptions.builder()
+                        .requestParameters(productsMethodParameters)
+                        .requestValidator(productRequestValidator)
+                        .requestModels(productRequestModels)
+                        .build()
         );
 
         // GET /products/{id}
