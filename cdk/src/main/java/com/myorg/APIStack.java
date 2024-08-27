@@ -85,7 +85,7 @@ public class APIStack extends Stack {
                         .maximum(1000.0)
                         .build()
         );
-        
+
         return productModelProperties;
     }
 

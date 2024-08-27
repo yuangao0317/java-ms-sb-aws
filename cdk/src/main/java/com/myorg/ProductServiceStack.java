@@ -59,7 +59,18 @@ public class ProductServiceStack extends Stack {
                         .readCapacity(1)
                         .writeCapacity(1)
                         .build());
-
+        productsDdb.addGlobalSecondaryIndex(
+                GlobalSecondaryIndexProps.builder()
+                        .indexName("codeIdx")
+                        .partitionKey(Attribute.builder()
+                                .name("code")
+                                .type(AttributeType.STRING)
+                                .build())
+                        .projectionType(ProjectionType.KEYS_ONLY)
+                        .readCapacity(1)
+                        .writeCapacity(1)
+                        .build()
+        );
 
         // Init Fargate compute resources
         FargateTaskDefinition fargateTaskDefinition = new FargateTaskDefinition(this, "Fargate-Task-Definition",
@@ -194,8 +205,6 @@ public class ProductServiceStack extends Stack {
                                 )
                         )
                         .build());
-
-
     }
 }
 
